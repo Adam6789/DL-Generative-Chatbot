@@ -130,7 +130,7 @@ def train(epochs, batch_size, print_each, lr, model, version, questions, answers
             text = ""
             for x in prediction:
                 text += vA.index2word[str(torch.argmax(x,dim=0).item())] + " "
-            print("prediction:", text)
+            print("prediction:", text, "\n")
 
 
             torch.save(model.state_dict(),f"model_{version}.pt")

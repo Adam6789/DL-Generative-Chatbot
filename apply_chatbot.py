@@ -21,9 +21,5 @@ def apply_chatbot(model, question, vocab_source, vocab_target, max_length):
             break
     predicted_answer =  " ".join(truncated_sequence)
     question = " ".join([vocab_source.index2word[str(a.item())] for a in question[0]])
-    print("question:", question)
-#     if answer != None:
-#         answer = " ".join([vocab_target.index2word[str(a.item())] for a in answer])
-#         print("answer:",answer)
-    print("predicted_answer:",predicted_answer)
+    print("< ",predicted_answer)
     print("")

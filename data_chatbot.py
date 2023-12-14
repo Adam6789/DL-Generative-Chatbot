@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 from nltk.corpus import brown
 import torch
 import nltk
-import gensim
 import random
 from sklearn.utils import shuffle
 
