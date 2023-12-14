@@ -15,22 +15,16 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def load_df():
     train_dataset, dev_dataset = SQuAD1()
-    def save_df(dataset, file_name):
-        data_dict = {
-            "Question": [],
-            "Answer": []
-        }
-        for example in dataset:
-            data_dict["Question"].append(example[1]),
-            data_dict["Answer"].append(example[2][0])
-        df_train = pd.DataFrame(data_dict)
-        df_train.to_csv(file_name)
-    # save data
-    save_df(train_dataset, "data/squad1_data.csv")
-    save_df(dev_dataset, "data/squad1_data.csv", mode='a')       
-    # load data
-    df = pd.read_csv("data/squad1_data.csv",usecols=[1,2])
-        
+    data_dict = {
+        "Question": [],
+        "Answer": []
+    }
+    for example in train_dataset + dev_dataset:
+        data_dict["Question"].append(example[1]),
+        data_dict["Answer"].append(example[2][0])
+    df = pd.DataFrame(data_dict)
+    df.to_csv("data/squad1_data.csv")      
+    #df = pd.read_csv("data/squad1_data.csv",usecols=[1,2])      
     return df
     
 
@@ -60,8 +54,8 @@ def train_valid_split(SRC, TRG, share=0.8):
     return SRC_train_dataset, SRC_valid_dataset, TRG_train_dataset, TRG_valid_dataset
 
 
-def questions_answers(source_name="squad1"):
-    df_train = load_df(source_name=source_name)
+def questions_answers():
+    df_train = load_df()
     questions = [prepare_text(sentence) for sentence in df_train['Question'].values.tolist()]
     answers = [prepare_text(sentence) for sentence in df_train['Answer'].values.tolist()]
     questions_train, questions_valid, answers_train, answers_valid = train_valid_split(questions, answers)
