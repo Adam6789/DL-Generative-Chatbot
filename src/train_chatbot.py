@@ -48,6 +48,7 @@ def pretrain(model, vQ, vA, w2v):
 
 
 def train(epochs, batch_size, print_each, lr, model, version, questions, answers, vQ, vA):  
+    validation_batches = 5
 
     
     
@@ -68,7 +69,7 @@ def train(epochs, batch_size, print_each, lr, model, version, questions, answers
         train_loss = 0
         valid_loss = 0
         Q_batches, A_batches = heteroDataLoader(questions, answers, batch_size)
-        for i, (batch_q, batch_a) in enumerate(zip(Q_batches[:-5], A_batches[:-5]),1):   
+        for i, (batch_q, batch_a) in enumerate(zip(Q_batches[:-validation_batches], A_batches[:-validation_batches]),1):   
             model.train()
             batch_loss = 0
     
@@ -89,7 +90,7 @@ def train(epochs, batch_size, print_each, lr, model, version, questions, answers
         
 
         
-        for n, (batch_q, batch_a) in enumerate(zip(Q_batches[-5:], A_batches[-5:])):     
+        for n, (batch_q, batch_a) in enumerate(zip(Q_batches[-validation_batches:], A_batches[-validation_batches:])):     
             # evaluation loop
             model.eval()
             #batch_loss = 0
@@ -108,8 +109,8 @@ def train(epochs, batch_size, print_each, lr, model, version, questions, answers
 
         if epoch % print_each == 0:
             batches = len(questions) // batch_size
-            valid_loss = round(valid_loss.item() / (5 * batch_size * print_each),3)
-            train_loss = round(train_loss.item() / ((batches - 5) * batch_size * print_each),3)    
+            valid_loss = round(valid_loss.item() / (validation_batches * batch_size * print_each),3)
+            train_loss = round(train_loss.item() / ((batches - validation_batches) * batch_size * print_each),3)    
             print(f"epoch: {epoch}/{epochs}", "\ttrain_loss:",train_loss, "\tvalid_loss", valid_loss)
 
            
