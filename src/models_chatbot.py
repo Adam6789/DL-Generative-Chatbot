@@ -9,12 +9,7 @@ class Encoder(nn.Module):
     def __init__(self, input_size, hidden_size, dropout=0):
         
         super(Encoder, self).__init__()
-        
-        # self.embedding provides a vector representation of the inputs to our model
         self.embedding = nn.Embedding(input_size, hidden_size)
-        
-        
-        # self.lstm, accepts the vectorized input and passes a hidden state
         self.lstm = nn.LSTM(hidden_size, hidden_size)
         self.dropout = nn.Dropout(p=dropout)
         
@@ -40,13 +35,11 @@ class Decoder(nn.Module):
         
         super(Decoder, self).__init__()
         
-        # self.embedding provides a vector representation of the target to our model
         self.embedding = nn.Embedding(output_size, hidden_size)
         
 
         self.lstm = nn.LSTM(hidden_size, hidden_size)
-
-        # self.ouput, predicts on the hidden state via a linear output layer  
+  
         self.linear = nn.Linear(hidden_size, output_size)
         
         self.dropout = nn.Dropout(p=dropout)
@@ -70,8 +63,7 @@ class Decoder(nn.Module):
         o = self.dropout(o)
 
         o = self.softmax(o)
-
-        
+       
         return o, h
         
         
@@ -86,10 +78,6 @@ class Seq2Seq(nn.Module):
         self.teacher_forcing_ratio = teacher_forcing_ratio
         self.hidden_size = hidden_size
 
-                
-        
-    
-    
     def forward(self, src, trg): 
         '''
         Inputs: src, the source vector
@@ -97,7 +85,6 @@ class Seq2Seq(nn.Module):
         Outputs: o, the prediction
                 
         '''
-
         
         src.to(device)
         trg.to(device)
@@ -108,16 +95,14 @@ class Seq2Seq(nn.Module):
         for word in src:
             o, hidden = self.encoder(word.view(-1), hidden)
             x,y = hidden
-
-        
+   
         # decoder
         o = start
         prediction = []
         for word in trg:
             o, hidden = self.decoder(o.view(-1), hidden)
             x,y = hidden
-
-
+            
             prediction.append(o)
             
             if self.training:

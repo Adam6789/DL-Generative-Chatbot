@@ -6,46 +6,6 @@ import random
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-  
-def pretrain(model, vQ, vA, w2v):
-    
-    hidden_size = len(list(model.encoder.parameters())[0][1])
-    
-    weights_matrix = list(model.encoder.parameters())[0].detach().numpy()
-    words_found = 0
-    # known_words = []
-    # unknown_words = []
-    for i, word in enumerate(vQ.words):
-        try: 
-            weights_matrix[i] = w2v.wv[word]
-            words_found += 1
-    #         known_words.append(word)
-        except KeyError:
-            weights_matrix[i] = np.random.normal(scale=0.6, size=(hidden_size, ))
-    #         unknown_words.append((word,i))
-    print(f"For {words_found} of {len(vQ.words)} words an entry has been found in the brown corpus.")
-    weights_matrix = torch.from_numpy(weights_matrix)
-    model.encoder.embedding.load_state_dict({'weight':weights_matrix})
-    
-    # DECODER
-    
-    weights_matrix = list(model.decoder.parameters())[0].detach().numpy()
-    words_found = 0
-    # known_words = []
-    # unknown_words = []
-    for i, word in enumerate(vA.words):
-        try: 
-            weights_matrix[i] = w2v.wv[word]
-            words_found += 1
-    #         known_words.append(word)
-        except KeyError:
-            weights_matrix[i] = np.random.normal(scale=0.6, size=(hidden_size, ))
-    #         unknown_words.append((word,i))
-    print(f"For {words_found} of {len(vA.words)} words an entry has been found in the brown corpus.")
-    weights_matrix = torch.from_numpy(weights_matrix)
-    model.decoder.embedding.load_state_dict({'weight':weights_matrix})
-    return model
-
 
 def train(epochs, batch_size, print_each, lr, model, version, questions, answers, vQ, vA):  
     validation_batches = 5
@@ -83,29 +43,14 @@ def train(epochs, batch_size, print_each, lr, model, version, questions, answers
             batch_loss.backward()
             optim.step()
             optim.zero_grad()
-
-       
-
     
-        
-
-        
         for n, (batch_q, batch_a) in enumerate(zip(Q_batches[-validation_batches:], A_batches[-validation_batches:])):     
-            # evaluation loop
             model.eval()
-            #batch_loss = 0
             for q, a in zip(batch_q, batch_a):      
                 output = model(q,a)
-                try:
-                    loss = loss_fn(output.squeeze(),a.squeeze())
-                except:
-
-                    print("could not be computed for:", q, a, output)
-                    print(q.shape, a. shape, output.shape)
-                #batch_loss += loss
+                loss = loss_fn(output.squeeze(),a.squeeze())
                 valid_loss += loss / a.size(0)
 
-            #valid_loss += batch_loss / batch_size
 
         if epoch % print_each == 0:
             batches = len(questions) // batch_size
