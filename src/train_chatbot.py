@@ -12,11 +12,11 @@ def train(epochs, batch_size, print_each, lr, model, version, questions, answers
 
     
     
-    if Path(f"model_{version}.pt").is_file():
-        model.load_state_dict(torch.load(f"model_{version}.pt", map_location=torch.device('cpu')))
-        print(f"Loading from checkpoint: 'model_{version}.pt'")
+    if Path(f"models/model_{version}.pt").is_file():
+        model.load_state_dict(torch.load(f"models/model_{version}.pt", map_location=torch.device('cpu')))
+        print(f"Loading from checkpoint: 'models/model_{version}.pt'")
     else:
-        print(f"Nothing to load at checkpoint: 'model_{version}.pt'")
+        print(f"Nothing to load at checkpoint: 'models/model_{version}.pt'")
         
     model.to(device) 
     print(f"Computing on {device}.\n")
@@ -79,7 +79,7 @@ def train(epochs, batch_size, print_each, lr, model, version, questions, answers
             print("prediction:", text, "\n")
 
 
-            torch.save(model.state_dict(),f"model_{version}.pt")
+            torch.save(model.state_dict(),f"models/model_{version}.pt")
             train_loss = 0
             valid_loss = 0
         

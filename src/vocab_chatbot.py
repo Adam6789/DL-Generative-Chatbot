@@ -7,8 +7,8 @@ class Vocab:
                                        
     def indexWord(self, word):
         if word not in self.word2index:
-            self.word2index[word] = self.count       # word2index
-            self.index2word[str(self.count)] = word  # index2word
+            self.word2index[word] = self.count
+            self.index2word[str(self.count)] = word
             self.count += 1
             return True
         else:

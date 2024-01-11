@@ -89,18 +89,6 @@ def vectorize_answers(sentences, vocab):
         tokenized_sentences.append(torch.LongTensor(tokenized_sentence).to(device))
     return tokenized_sentences
 
-def pretrained_w2v(init):
-    if init:
-        nltk.download('brown')
-        nltk.download('punkt')
-
-        #Output, save, and load brown embeddings
-
-        model = gensim.models.Word2Vec(brown.sents())
-        model.save('brown.embedding')
-
-    w2v = gensim.models.Word2Vec.load('brown.embedding')
-    return w2v
 
 
         
